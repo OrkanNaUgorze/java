@@ -1,0 +1,167 @@
+package searching_App;
+
+import java.util.Scanner;
+import java.io.File;
+
+public class starter {
+
+	private static String workingPath="";
+	private static int maximumDepth = 0;
+	
+	public static void main(String[] args) {
+		// Welcome screen & start menu:
+
+		System.out.println("*****************************************\n" + "*\t\t WELCOME !\t\t*\n"
+				+ "*****************************************");
+		System.out.println("\n \n  This application is used to search for and\n "
+				+ "analyse the contents of folders on a computer's\n"
+				+ "local drive. It automatically enters subfolders\n" + " based on the search level.\n"
+				+ "  If there are any files in a particular location,\n"
+				+ "the application will inform us and give us\n" + " the option to copy or move files. If this is\n"
+				+ "not possible, a message will be displayed." + "\n \n*****************************************");
+
+		Scanner menu1_input = new Scanner(System.in);
+		int menu1_choice;// = menu1_input.nextInt();
+
+		// menu 1 START:
+
+		do {
+			menu1();
+			menu1_choice = getMenuChoice();
+			switch (menu1_choice) {
+
+			case 1: // Searching menu
+				menu2();
+				break;
+			case 2: // show current working path
+				currentWorkingPath();
+				break;
+			case 3: // show app path
+				appDirectory();
+				break;
+			case 4: // close
+				byebye();
+				break;
+			default:
+				System.out.println("Wrong input - try again");
+
+			}// switch menu 1 END
+		} while (menu1_choice != 4);// end while
+
+	} // main END
+
+	// Defining menus:
+	
+	public static void menu1() {
+		System.out.println("1. Searching menu." + "\n2. Display the current working path."
+				+ "\n3. Display the programme path" + "\n4. End of programme");
+	}// end menu1
+	
+	public static void menu2() {
+		
+		Boolean goBack = false;
+
+		while (!goBack) {
+			System.out.println("\n****\t \t Searching menu \t \t****"
+					+ "\n \n Choose Your destiny: \n \n" + "1. Specify working path \n" + "2. Set the level \n"
+					+ "3. Start searching\n" + "4. Go to previuos menu\n" + "5. Close the app\n \n");
+
+			int choice2 = getMenuChoice();
+
+			switch (choice2) {
+
+			case 1: // shows current working path
+				getCurrentWorkingPath();
+				break;
+			case 2: // sets searching depth level
+				searchingDepthLevel();
+				break;
+			case 3: // start searching for files & directories
+				startSearching(maximumDepth);
+				break;
+			case 4:  // previuos menu
+				goBack = true;
+				break;
+			case 5: // close
+				byebye();
+				break;
+			default:
+				System.out.println("\n \n Wrong input - try again \n \n");
+			}
+		} // end while
+	} // end menu2
+	
+	
+	// Defining methods:
+
+	public static int getMenuChoice() { // used to interaction between user & app
+		Scanner getMenu1_choice = new Scanner(System.in);
+		System.out.println("Your choice: ");
+		return getMenu1_choice.nextInt();
+	} // end getMenuChoice()
+
+	public static void appDirectory() { // osed to show source directory of the app
+		String currentDir = System.getProperty("user.dir");
+		System.out.println("\n*****************************************" + "\nApplication path is: " + currentDir
+				+ "\n*****************************************\n");
+	} // end appDirectory()
+	
+	public static String getCurrentWorkingPath() { // used to set the working directory
+        Scanner getWorkingPath = new Scanner(System.in);
+        System.out.print("Please, define the working Path: ");
+        workingPath = getWorkingPath.nextLine();
+        return workingPath;
+    } // end getCurrentWorkingPath()
+	
+	 public static void currentWorkingPath() { // used to show actual working directory
+	        if (workingPath.isEmpty()) {
+	            System.out.println("The working Path has not been specified.");
+	        } else {
+	            System.out.println("Your actual working Path: " + workingPath);
+	        }
+	 } // end currentWorkingPath()
+	 
+	 public static void searchingDepthLevel() { // sets searching level
+		 Scanner deepInput = new Scanner(System.in);
+		 System.out.print("Give me searching depth level:");
+		 int depthLevel = deepInput.nextInt();
+		 maximumDepth = depthLevel;
+	 } // end searchingDepthLevel()
+	 
+	 public static void startSearching(int level) {
+		 if(level > maximumDepth) {
+			 System.out.println("Please, define level lover than "+ maximumDepth);
+			 return;
+		 }
+		 
+		 File catalogue = new File(workingPath);
+		 File[] files = catalogue.listFiles();
+		 
+		 if (files != null) {
+			 System.out.println("Found files and directories in " + workingPath + ":");
+			 for (File file : files) {
+				 // show catalogues
+				 if (file.isDirectory()) {
+					 System.out.println("[DIR] \n" + file.getName());
+					 startSearching(level + 1); // go into lover level catalogue if there is any
+				 }
+			 }// end for
+			 
+			 // show files
+			 for(File file : files) {
+				if(!file.isDirectory()) {
+					System.out.println("[FILES] \n" + file.getName());
+				} 
+			 } // end for
+			 
+		 } else {
+			 System.out.println("No files or directories found in " + workingPath);
+		 }
+	 } // end startSearching
+
+	public static void byebye() {
+		System.out.println("End of line");
+		System.exit(0);
+	} // end byebye()
+	
+} // starter END
